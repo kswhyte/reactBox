@@ -15,31 +15,7 @@ class ReactBox extends React.Component {
   storeIdea(idea) {
     this.state.ideas.push(idea);
     let ideas = this.state.ideas;
-    this.setState({ideas: ideas}, () => this.lStore());
-  }
-
-  destroy(id) {
-    let ideas = this.state.ideas.filter(idea => idea.id !== id);
-    this.setState({ideas: ideas}, () => this.lStore());
-  }
-
-  selectActive(id) {
-    let ideas = this.state.ideas.map(idea=> Object.assign(idea, {active: id === idea.id}));
-    this.setState({ideas: ideas}, () => this.lStore());
-  }
-
-  lStore() {
-    localStorage.setItem('ideas', JSON.stringify(this.state.ideas));
-  }
-
-  updateIdea(e, id) {
-    const { name, value } = e.target;
-    let ideas = this.state.ideas.map(idea=> {
-      if(idea.id !== id) return idea;
-      return Object.assign(idea,  {[name]: value});
-    });
-
-    this.setState({ideas: ideas}, () => this.lStore());
+    this.setState({ideas: ideas}, () => localStorage.setItem('ideas', JSON.stringify(ideas)));
   }
 
   render() {
@@ -52,14 +28,8 @@ class ReactBox extends React.Component {
             <h1>{this.props.title}</h1>
             <CreateIdea saveIdea={this.storeIdea.bind(this)}/>
           </header>
-          <IdeasList ideas={this.state.ideas}
-                     destroy={this.destroy.bind(this)}
-                     selectActive={this.selectActive.bind(this)}
-          />
         </section>
-        <section className='main-content'>
-          <ActiveIdea idea={activeIdea} updateIdea={this.updateIdea.bind(this)}/>
-        </section>
+
       </div>
     );
   }
@@ -103,49 +73,7 @@ class CreateIdea extends React.Component {
   }
 }
 
-const IdeasList= ({ideas, destroy, selectActive}) => {
-  return (
-    <div className='IdeaList'>
-      {ideas.map(idea => <Idea {...idea}
-                          selectActive={selectActive}
-                          destroy={destroy} key={idea.id} />)}
-    </div>
-  );
-};
 
-const Idea = ({id, title, body, active, selectActive, destroy}) => {
-  return (
-    <div className={active ? 'IdeasListItem is-active' : 'IdeasListItem'}>
-      <h3 className='IdeasListItem-title'>{title}</h3>
-      <div className='IdeasListItem-body'>{body}</div>
-      <div className='IdeasListItem-buttons'>
-        <button onClick={()=> destroy(id) }>Destroy</button>
-        <button onClick={()=> selectActive(id) }>Active</button>
-      </div>
-    </div>
-  );
-};
-
-const ActiveIdea = ({idea, updateIdea}) => {
-  if (!idea) {
-    return <p className='ActiveIdea'> Please select idea</p>;
-  };
-
-  return (
-    <div className='ActiveIdea'>
-      <input className='ActiveIdea-title'
-             name='title'
-             value={idea.title}
-             onChange={(e) =>updateIdea(e, idea.id)}
-      />
-      <textarea className='ActiveIdea-body'
-                name='body'
-                value={idea.body}
-                onChange={(e) =>updateIdea(e, idea.id)}
-      />
-    </div>
-  );
-};
 
 
 ReactDOM.render(<ReactBox title='React to This'/>, document.querySelector('.application'));
