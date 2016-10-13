@@ -24,7 +24,9 @@ class ReactBox extends React.Component {
   }
 
   selectActive(id) {
-    let ideas = this.state.ideas.map(idea=> Object.assign(idea, {active: id === idea.id}));
+    let ideas = this.state.ideas.map(idea => {
+      return Object.assign(idea, {active: id === idea.id ? !idea.active : false });
+    });
     this.setState({ideas: ideas}, () => this.lStore());
   }
 
