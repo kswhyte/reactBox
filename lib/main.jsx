@@ -10,10 +10,7 @@ class ReactBox extends React.Component {
   }
 
   componentDidMount() {
-    firebase.database().ref('ideas').on('value', (snapshot) => {
-      var messages = this.returnArray(snapshot.val())
-      this.setState({ ideas: messages ? messages : [] });
-    })
+    this.fromFirebase()
   }
 
   fromFirebase (){
@@ -80,11 +77,11 @@ class ReactBox extends React.Component {
         <section className='main-content'>
         <ActiveIdea idea={activeIdea} updateIdea={this.updateIdea.bind(this)}/>
         </section>
-         <Login onLogin={(user)=> {this.setState({user: null})}} determainLog={logOut} text="Logout"/>
+         <Login onLogin={()=> {this.setState({user: null})}} determainLog={logOut} text="Logout"/>
         </div>
       );
     } else {
-   return (  <Login onLogin={ (user) => {this.setState({user})}} determainLog={signIn} text="Login"/>
+   return (  <Login onLogin={ (user) => {this.setState({user:response.user})}} determainLog={signIn} text="Login"/>
     )
   }
  }
@@ -93,7 +90,7 @@ class ReactBox extends React.Component {
 const Login = ({onLogin, determainLog, text}) => {
 return(
   <section>
-    <button onClick = {()=> determainLog().then(({user: newUser})=> onLogin(newUser))}>{text}</button>
+    <button onClick = {()=> determainLog().then((newUser)=> onLogin(newUser))}>{text}</button>
   </section>
   )
 }
