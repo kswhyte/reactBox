@@ -1,70 +1,111 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import firebase, {signIn, logOut, reference, deleteIdea, updateIdea} from './firebase'
+import {map, extend} from 'lodash'
 
 class ReactBox extends React.Component {
   constructor() {
     super();
-    this.state = { ideas: [] };
+    this.state = { ideas: [], user: null };
   }
 
   componentDidMount() {
-    const items = JSON.parse(localStorage.getItem('ideas'));
-    this.setState({ ideas: items ? items : [] });
+    firebase.database().ref('ideas').on('value', (snapshot) => {
+      var messages = this.returnArray(snapshot.val())
+      this.setState({ ideas: messages ? messages : [] });
+    })
   }
 
+  fromFirebase (){
+    firebase.database().ref('ideas').on('value', (snapshot) => {
+      var messages = this.returnArray(snapshot.val())
+      this.setState({ ideas: messages ? messages : [] });
+    })
+  }
+  returnArray(messages){
+  if (messages) {
+   var array = []
+   var key = Object.keys(messages).map((key)=>{
+     var singleMessage = messages[key]
+     singleMessage['key'] = key
+     array.push(singleMessage)
+     })
+   }
+ return array
+}
+
   storeIdea(idea) {
-    this.state.ideas.push(idea);
-    let ideas = this.state.ideas;
-    this.setState({ideas: ideas}, () => this.lStore());
+    reference.push(idea)
+    fromFirebase()
   }
 
   destroy(id) {
-    let ideas = this.state.ideas.filter(idea => idea.id !== id);
-    this.setState({ideas: ideas}, () => this.lStore());
+    var idea = this.state.ideas.find((idea)=> idea.id === id)
+    deleteIdea(idea.key)
   }
 
   selectActive(id) {
     let ideas = this.state.ideas.map(idea => {
       return Object.assign(idea, {active: id === idea.id ? !idea.active : false });
     });
-    this.setState({ideas: ideas}, () => this.lStore());
-  }
-
-  lStore() {
-    localStorage.setItem('ideas', JSON.stringify(this.state.ideas));
+    this.setState({ideas: ideas})
   }
 
   updateIdea(e, id) {
     const { name, value } = e.target;
     let ideas = this.state.ideas.map(idea=> {
       if(idea.id !== id) return idea;
+      updateIdea(idea.key,name,value)
       return Object.assign(idea,  {[name]: value});
     });
-
-    this.setState({ideas: ideas}, () => this.lStore());
+    this.setState({ideas: ideas});
   }
 
   render() {
     const activeIdea = this.state.ideas.find(idea => idea.active);
-
-    return (
-      <div className='IdeaBox'>
+    if (this.state.user){
+      return (
+        <div className='IdeaBox'>
         <section className='sidebar'>
-          <header>
-            <h1>{this.props.title}</h1>
-            <CreateIdea saveIdea={this.storeIdea.bind(this)}/>
-          </header>
-          <IdeasList ideas={this.state.ideas}
-                     destroy={this.destroy.bind(this)}
-                     selectActive={this.selectActive.bind(this)}
-          />
+        <header>
+        <UserInfo user={this.state.user}/>
+        <h1>{this.props.title}</h1>
+        <CreateIdea saveIdea={this.storeIdea.bind(this)}/>
+        </header>
+        <IdeasList ideas={this.state.ideas}
+        destroy={this.destroy.bind(this)}
+        selectActive={this.selectActive.bind(this)}
+        />
         </section>
         <section className='main-content'>
-          <ActiveIdea idea={activeIdea} updateIdea={this.updateIdea.bind(this)}/>
+        <ActiveIdea idea={activeIdea} updateIdea={this.updateIdea.bind(this)}/>
         </section>
-      </div>
-    );
+         <Login onLogin={(user)=> {this.setState({user: null})}} determainLog={logOut} text="Logout"/>
+        </div>
+      );
+    } else {
+   return (  <Login onLogin={ (user) => {this.setState({user})}} determainLog={signIn} text="Login"/>
+    )
   }
+ }
+}
+
+const Login = ({onLogin, determainLog, text}) => {
+return(
+  <section>
+    <button onClick = {()=> determainLog().then(({user: newUser})=> onLogin(newUser))}>{text}</button>
+  </section>
+  )
+}
+
+const UserInfo = ({user}) => {
+  return (
+    <section>
+    <img className="user-photo"src={user.photoURL}/>
+    <p>{user.displayName}</p>
+    <p>{user.email}</p>
+    </section>
+  )
 }
 
 class CreateIdea extends React.Component {
@@ -74,6 +115,7 @@ class CreateIdea extends React.Component {
   }
   updateProperties(e) {
     const {name, value} = e.target;
+
     this.setState({ [name]: value });
   }
 
@@ -106,6 +148,7 @@ class CreateIdea extends React.Component {
 }
 
 const IdeasList= ({ideas, destroy, selectActive}) => {
+
   return (
     <div className='IdeaList'>
       {ideas.map(idea => <Idea {...idea}
@@ -148,6 +191,4 @@ const ActiveIdea = ({idea, updateIdea}) => {
     </div>
   );
 };
-
-
 ReactDOM.render(<ReactBox title='React to This'/>, document.querySelector('.application'));
