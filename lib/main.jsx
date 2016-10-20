@@ -1,10 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import firebase, {signIn} from './firebase';
 
 class ReactBox extends React.Component {
   constructor() {
     super();
-    this.state = { ideas: [] };
+    this.state = {
+      ideas: [],
+      user: null
+    };
   }
 
   componentDidMount() {
@@ -46,26 +50,42 @@ class ReactBox extends React.Component {
 
   render() {
     const activeIdea = this.state.ideas.find(idea => idea.active);
-
-    return (
-      <div className='IdeaBox'>
+    if(this.state.user) {
+      return (
+        <div className='IdeaBox'>
         <section className='sidebar'>
-          <header>
-            <h1>{this.props.title}</h1>
-            <CreateIdea saveIdea={this.storeIdea.bind(this)}/>
-          </header>
-          <IdeasList ideas={this.state.ideas}
-                     destroy={this.destroy.bind(this)}
-                     selectActive={this.selectActive.bind(this)}
-          />
+        <header>
+        <h1>{this.props.title}</h1>
+        <CreateIdea saveIdea={this.storeIdea.bind(this)} hello={this.hello}/>
+        </header>
+        <IdeasList ideas={this.state.ideas}
+        destroy={this.destroy.bind(this)}
+        selectActive={this.selectActive.bind(this)}
+        />
         </section>
         <section className='main-content'>
-          <ActiveIdea idea={activeIdea} updateIdea={this.updateIdea.bind(this)}/>
+        <ActiveIdea idea={activeIdea} updateIdea={this.updateIdea.bind(this)}/>
         </section>
-      </div>
-    );
+        </div>
+      );
+    } else {
+      return (
+        // use firebase to get the user setState of this.state.user
+        // login button, uses signIn()
+        // Login, stateless, doesn't super() from React.Component
+        <Login onLogin={(resolve)=> { this.setState({user: resolve.user}) } }  signIn={signIn} />
+      );
+    }
   }
 }
+
+const Login = ({onLogin, signIn}) => {
+  return(
+    <section>
+      <button onClick={() => signIn().then((resolve)=> onLogin(resolve)) }>Login</button>
+    </section>
+  );
+};
 
 class CreateIdea extends React.Component {
   constructor() {
