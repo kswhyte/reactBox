@@ -20,7 +20,7 @@ class ReactBox extends React.Component {
     })
   }
   returnArray(messages){
-    // console.log(map(messages, (val, key) => extend(val, { key })))
+
   if (messages) {
    var array = []
    var key = Object.keys(messages).map((key)=>{
