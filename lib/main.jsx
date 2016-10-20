@@ -20,6 +20,7 @@ class ReactBox extends React.Component {
     })
   }
   returnArray(messages){
+    // console.log(map(messages, (val, key) => extend(val, { key })))
   if (messages) {
    var array = []
    var key = Object.keys(messages).map((key)=>{
@@ -81,7 +82,7 @@ class ReactBox extends React.Component {
         </div>
       );
     } else {
-   return (  <Login onLogin={ (user) => {this.setState({user:response.user})}} determainLog={signIn} text="Login"/>
+   return (  <Login onLogin={ (user) => {this.setState({user:user.user})}} determainLog={signIn} text="Login"/>
     )
   }
  }
