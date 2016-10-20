@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import firebase, {signIn} from './firebase';
+import firebase, {signIn, signOut} from './firebase';
 
 class ReactBox extends React.Component {
   constructor() {
@@ -54,6 +54,7 @@ class ReactBox extends React.Component {
       return (
         <div className='IdeaBox'>
         <section className='sidebar'>
+        <UserInfo user={this.state.user}/>
         <header>
         <h1>{this.props.title}</h1>
         <CreateIdea saveIdea={this.storeIdea.bind(this)} hello={this.hello}/>
@@ -66,23 +67,31 @@ class ReactBox extends React.Component {
         <section className='main-content'>
         <ActiveIdea idea={activeIdea} updateIdea={this.updateIdea.bind(this)}/>
         </section>
+        <Login onLogin={()=> { this.setState({user: null}) } } determinedLog={signOut} text='Sign Out' />
         </div>
       );
     } else {
       return (
-        // use firebase to get the user setState of this.state.user
-        // login button, uses signIn()
-        // Login, stateless, doesn't super() from React.Component
-        <Login onLogin={(resolve)=> { this.setState({user: resolve.user}) } }  signIn={signIn} />
+        <Login onLogin={(resolve)=> { this.setState({user: resolve.user}) } }  determinedLog={signIn} text='Login' />
       );
     }
   }
 }
 
-const Login = ({onLogin, signIn}) => {
+const Login = ({onLogin, determinedLog, text}) => {
   return(
     <section>
-      <button onClick={() => signIn().then((resolve)=> onLogin(resolve)) }>Login</button>
+      <button onClick={() => determinedLog().then((resolve)=> onLogin(resolve)) }>{text}</button>
+    </section>
+  );
+};
+
+const UserInfo = ({user}) => {
+  return (
+    <section>
+      <img className='user-photo' src={user.photoURL} />
+      <p>{user.displayName}</p>
+      <p>{user.email}</p>
     </section>
   );
 };
