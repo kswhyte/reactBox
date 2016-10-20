@@ -4,7 +4,7 @@ import firebase, {signIn, signOut} from './firebase';
 
 class ReactBox extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       ideas: [],
       user: null
@@ -14,6 +14,14 @@ class ReactBox extends React.Component {
   componentDidMount() {
     const items = JSON.parse(localStorage.getItem('ideas'));
     this.setState({ ideas: items ? items : [] });
+    firebase.database().ref('ideas').on('value', (snapshot) => {
+      console.log(snapshot.val())
+  
+      // grab keys of main Object
+      // iterate over keys to grab the data aka ideas
+      // when recieved object push into array, and setState to new array.
+    });
+    // grab ideas from firebase
   }
 
   storeIdea(idea) {
