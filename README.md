@@ -127,7 +127,7 @@ What did you learn that you didn't already know?
 
 ### Bad Commits
 
-![Mark Down](bree)
+![Mark Down](https://github.com/Tman22/reactBox/blob/rebase_images/images/bree%201.png)
 ### Other resources:
 
 * [Here](https://www.atlassian.com/git/tutorials/merging-vs-rebasing/) is a great tutorial about the details of rebaseing vs merging.
