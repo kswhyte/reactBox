@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 class ReactBox extends React.Component {
   constructor() {
-    super()
+    super();
     this.state = { ideas: [] };
   }
 
@@ -31,7 +31,7 @@ class ReactBox extends React.Component {
         </section>
 
       </div>
-    )
+    );
   }
 }
 
@@ -69,7 +69,7 @@ class CreateIdea extends React.Component {
                type='submit'
                onClick={(e) => this.handleClick(e)} />
       </div>
-    )
+    );
   }
 }
 
