@@ -128,6 +128,12 @@ What did you learn that you didn't already know?
 ### Bad Commits
 
 ![Mark Down](https://github.com/Tman22/reactBox/blob/rebase_images/images/bree%201.png)
+![bree2](https://github.com/Tman22/reactBox/blob/rebase_images/images/bree2.png)
+![bree3](https://github.com/Tman22/reactBox/blob/rebase_images/images/bree3.png)
+![bree4](https://github.com/Tman22/reactBox/blob/rebase_images/images/bree4.png)
+![bree5](https://github.com/Tman22/reactBox/blob/rebase_images/images/bree5.png)
+![bree6](https://github.com/Tman22/reactBox/blob/rebase_images/images/bree6.png)
+
 ### Other resources:
 
 * [Here](https://www.atlassian.com/git/tutorials/merging-vs-rebasing/) is a great tutorial about the details of rebaseing vs merging.
