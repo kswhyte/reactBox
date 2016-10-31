@@ -45,7 +45,7 @@ class CreateIdea extends React.Component {
     this.setState({ [name]: value });
   }
 
-  createIdea(e) {
+  handleClick(e) {
     e.preventDefault();
     const idea = {title: this.state.title, body: this.state.body, id: Date.now(), active: false};
     this.props.saveIdea(idea);
@@ -67,7 +67,7 @@ class CreateIdea extends React.Component {
               aria-label='idea body' />
         <input className='CreateIdea-submit'
                type='submit'
-               onClick={(e) => this.createIdea(e)} />
+               onClick={(e) => this.handleClick(e)} />
       </div>
     );
   }
