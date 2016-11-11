@@ -1,4 +1,8 @@
-# React Starter Kit
+# ReactBox
+
+This is a small project built by Taylor Moore and Jhun de Andres to demonstrate the fundamentals of ReactJS. Various branches indicate various stages in their attempt to rebuild [IdeaBox](https://github.com/kswhyte/idea-box), in order to provide a model of learning React that can assisst the production of further projects.
+
+---
 
 To install the dependencies:
 
